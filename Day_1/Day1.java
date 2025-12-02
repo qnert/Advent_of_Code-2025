@@ -1,17 +1,17 @@
-
+import java.util.Scanner;
+import java.io.*;
 
 public class Day1{
 	private static int operate(String line, int nb){
-		switch(line[0]){
-			case 'L':
-				nb -= Integer.parseInt(line.substring(1, 3));
-				if (nb < 0){
-					nb = 100 + nb;
-				}
-			case 'R':
-				nb += Integer.parseInt(line.substring(1, 3)) % 100;
+		int curr = Integer.parseInt(line.substring(1));
+		if (line.charAt(0) == 'L'){
+				nb -= curr;
+				if (nb < 0){nb = 100 + nb;}
 		}
-		return nb;
+		else if (line.charAt(0) == 'R'){
+				nb += curr % 100;
+		}
+		return nb % 100;
 	}
 
 	private static int getInputAndOperate(String file){
@@ -35,7 +35,7 @@ public class Day1{
 	}
 
 	public static void main(String[] argv){
-		System.out.println(getInputAndOperate(argv[1]));
-		return 0;
+		System.out.println(getInputAndOperate(argv[0]));
+		return;
 	}
 }
