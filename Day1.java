@@ -14,7 +14,9 @@ public class Day1{
 		return nb;
 	}
 
-	private static String getInputAndOperate(String file){
+	private static int getInputAndOperate(String file){
+		int counter = 0;
+		int value = 50;
 		Scanner scan = null;
 		String lines = "";
 		try {
@@ -23,13 +25,17 @@ public class Day1{
     		e.printStackTrace();
 		}
 		while (scan.hasNext()) {
-			lines += scan.next();
+			value = operate(scan.next(), value);
+			if (value == 0){
+					counter++;
+			}
 		}
 		scan.close();
-		return lines;
+		return counter;
 	}
 
 	public static void main(String[] argv){
-		return;
+		System.out.println(getInputAndOperate(argv[1]));
+		return 0;
 	}
 }
