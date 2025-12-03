@@ -7,7 +7,7 @@ public class Day1{
 	static int counter_first = 0;
 	static int counter_second = 0;
 
-	private static int operate_first(String line, int nb){
+	private static int operateFirst(String line, int nb){
 		int curr = Integer.parseInt(line.substring(1));
 		
 		if (line.charAt(0) == 'L'){
@@ -22,7 +22,7 @@ public class Day1{
 		return nb % 100;
 	}
 
-	private static int operate_second(String line, int nb){
+	private static int operateSecond(String line, int nb){
         char dir = line.charAt(0);
         int move = Integer.parseInt(line.substring(1));
 
@@ -53,8 +53,8 @@ public class Day1{
 		}
 		while (scan.hasNext()) {
 			curr_str = scan.next();
-			value_first = operate_first(curr_str, value_first);
-			value_second = operate_second(curr_str, value_second);
+			value_first = operateFirst(curr_str, value_first);
+			value_second = operateSecond(curr_str, value_second);
 		}
 		scan.close();
 		System.out.println(counter_first);
