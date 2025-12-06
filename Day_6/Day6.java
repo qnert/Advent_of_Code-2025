@@ -48,29 +48,32 @@ public class Day6{
 		}
 
 		int i = 0;
-		String[] curr = null;
 		int[][] numbers = null;
+		String curr_line = null;
+		String[] curr_input = null;
 		String[] operations = null;
 
 		while (scan.hasNextLine()) {
-			curr = scan.nextLine().trim().split("\\s+");
+		curr_line = scan.nextLine();
+		curr_input = curr_line.trim().split("\\s+");
 
-			if (operations == null && numbers == null){
-				operations = new String[curr.length];
-				numbers = new int[4][curr.length];
-			}
+		if (operations == null && numbers == null){
+			operations = new String[curr_input.length];
+			numbers = new int[4][curr_input.length];
+		}
 
-			if (isNumeric(curr[i])){
-				for (int x = 0; x < curr.length; x++){
-					numbers[i][x] = Integer.parseInt(curr[x]);
-				}
-				i++;
+		if (isNumeric(curr_input[i])){
+			for (int x = 0; x < curr_input.length; x++){
+				numbers[i][x] = Integer.parseInt(curr_input[x]);
 			}
-			else
-				operations = curr;
+			i++;
+		}
+		else
+			operations = curr_input;
 
 		}
 		doOperationFirst(numbers, operations);
+		// doOperationSecond(numbers, operations);
 		scan.close();
 
 		System.out.println("Final result: " + counter_first);
