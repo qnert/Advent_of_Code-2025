@@ -21,7 +21,7 @@ public class Day8{
         int connections = Math.min(1000, edges.size());
         for (int i = 0; i < connections; i++) {
             Edge e = edges.get(i);
-            dsu.union(e.a.id, e.b.id);
+            dsu.union(e.first_box.id, e.second_box.id);
         }
 
         Map<Integer, Integer> groups = new HashMap<>();
@@ -55,14 +55,15 @@ public class Day8{
         long lastX1 = 0, lastX2 = 0;
 
         for (Edge e : edges) {
-            int rootA = dsu.find(e.a.id);
-            int rootB = dsu.find(e.b.id);
+            int rootA = dsu.find(e.first_box.id);
+            int rootB = dsu.find(e.second_box.id);
             if (rootA != rootB) {
                 dsu.union(rootA, rootB);
-                lastX1 = e.a.x;
-                lastX2 = e.b.x;
+                lastX1 = e.first_box.x;
+                lastX2 = e.second_box.x;
                 components--;
-                if (components == 1) break;
+                if (components == 1) 
+                    break;
             }
         }
         return lastX1 * lastX2;
