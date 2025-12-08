@@ -42,7 +42,6 @@ public class Day1{
     }
 
 	private static void getInputAndOperate(String file){
-		String lines = "";
 		Scanner scan = null;
 		String curr_str = "";
 
