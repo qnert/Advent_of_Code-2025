@@ -10,24 +10,38 @@ public class Day8{
     static int counter_first = 0;
     static int counter_second = 0;
 
-    private static double euklidischeDistanz(int[] first_point, int[] second_point){
-        double x = Math.pow((second_point[X] - first_point[X]), 2);
-        double y = Math.pow((second_point[Y] - first_point[Y]), 2);
-        double z = Math.pow((second_point[Z] - first_point[Z]), 2);
+    private static int[] createTuple(int x, int y){
+        int[] tuple = new int[2];
+
+        tuple[0] = x;
+        tuple[1] = y;
+
+        return tuple;
+    }
+
+    private static double euklidischeDistanz(String[] first_point, String[] second_point){
+        double x = Math.pow((Integer.parseInt(second_point[X]) - Integer.parseInt(first_point[X])), 2);
+        double y = Math.pow((Integer.parseInt(second_point[Y]) - Integer.parseInt(first_point[Y])), 2);
+        double z = Math.pow((Integer.parseInt(second_point[Z]) - Integer.parseInt(first_point[Z])), 2);
 
         return (Math.sqrt(x + y + z));
     }
 
-    private static int doOperationFirst(ArrayList<int[]> coordinates){
+    private static int doOperationFirst(ArrayList<String> coordinates){
         int first_vec = 0;
         int second_vec = 0;
         double temp_dist = 0;
-        double minDistance = euklidischeDistanz(coordinates.get(0), coordinates.get(1));
-        ArrayList<int[]> circuits = new ArrayList<int[]>();
+        double minDistance = 0;
+        HashMap<String, ArrayList<String>> circuits = new HashMap<>();
+
         for (int i = 0; i < 10; i++){
+            minDistance = Double.MAX_VALUE;
             for (int j = 0; j < coordinates.size(); j++){
                 for (int k = j + 1; k < coordinates.size(); k++){
-                    temp_dist = euklidischeDistanz(coordinates.get(j), coordinates.get(k));
+                    String key = coordinates.get(j);
+                    String value = coordinates.get(k);
+
+                    temp_dist = euklidischeDistanz(coordinates.get(j).split(","), coordinates.get(k).split(","));
                     if (temp_dist < minDistance){
                         first_vec = j;
                         second_vec = k;
@@ -35,24 +49,17 @@ public class Day8{
                     }
                 }
             }
-            System.out.println(coordinates.get(first_vec)[X] + " | " + coordinates.get(second_vec)[X]);
-            break;
+            System.out.println(coordinates.get(first_vec) + " | " + coordinates.get(second_vec));
         }
         return 0;
     }
 
     private static void parseAndOperate(Scanner scan){
         int[] temp_coord;
-        String[] splitted;
-        ArrayList<int[]> coordinates = new ArrayList<>();
+        ArrayList<String> coordinates = new ArrayList<>();
 
         while (scan.hasNextLine()) {
-            temp_coord = new int[3];
-            splitted = scan.nextLine().split(",");
-            for (int i = 0; i < 3; i++){
-                temp_coord[i] = Integer.parseInt(splitted[i]);
-            }
-            coordinates.add(temp_coord);
+            coordinates.add(scan.nextLine());
         }
         counter_first = doOperationFirst(coordinates);
         // counter_second = doOperationSecond(map);
