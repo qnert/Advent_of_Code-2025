@@ -1,75 +1,92 @@
-package Day_7;
-import java.util.*;
 import java.io.*;
-import java.math.BigInteger;
+import java.util.*;
 
 public class Day8{
-    static final int X = 0;
-    static final int Y = 1;
-    static final int Z = 2;
-    static int counter_first = 0;
-    static int counter_second = 0;
+    static long counter_first = 0;
+    static long counter_second = 0;
 
-    private static int[] createTuple(int x, int y){
-        int[] tuple = new int[2];
+    private static long doOperationFirst(ArrayList<JunctionBox> coordinates){
+        ArrayList<Edge> edges = new ArrayList<>();
 
-        tuple[0] = x;
-        tuple[1] = y;
-
-        return tuple;
-    }
-
-    private static double euklidischeDistanz(String[] first_point, String[] second_point){
-        double x = Math.pow((Integer.parseInt(second_point[X]) - Integer.parseInt(first_point[X])), 2);
-        double y = Math.pow((Integer.parseInt(second_point[Y]) - Integer.parseInt(first_point[Y])), 2);
-        double z = Math.pow((Integer.parseInt(second_point[Z]) - Integer.parseInt(first_point[Z])), 2);
-
-        return (Math.sqrt(x + y + z));
-    }
-
-    private static int doOperationFirst(ArrayList<String> coordinates){
-        int first_vec = 0;
-        int second_vec = 0;
-        double temp_dist = 0;
-        double minDistance = 0;
-        HashMap<String, ArrayList<String>> circuits = new HashMap<>();
-
-        for (int i = 0; i < 10; i++){
-            minDistance = Double.MAX_VALUE;
-            for (int j = 0; j < coordinates.size(); j++){
-                for (int k = j + 1; k < coordinates.size(); k++){
-                    String key = coordinates.get(j);
-                    String value = coordinates.get(k);
-
-                    temp_dist = euklidischeDistanz(coordinates.get(j).split(","), coordinates.get(k).split(","));
-                    if (temp_dist < minDistance){
-                        first_vec = j;
-                        second_vec = k;
-                        minDistance = temp_dist;
-                    }
-                }
+        for (int i = 0; i < coordinates.size(); i++){
+            for (int j = i + 1; j < coordinates.size(); j++){
+                double d = coordinates.get(i).euclideanDistance(coordinates.get(j));
+                edges.add(new Edge(coordinates.get(i), coordinates.get(j), d));
             }
-            System.out.println(coordinates.get(first_vec) + " | " + coordinates.get(second_vec));
         }
-        return 0;
+        Collections.sort(edges);
+
+        DSU dsu = new DSU(coordinates.size());
+
+        int connections = Math.min(1000, edges.size());
+        for (int i = 0; i < connections; i++) {
+            Edge e = edges.get(i);
+            dsu.union(e.a.id, e.b.id);
+        }
+
+        Map<Integer, Integer> groups = new HashMap<>();
+
+        for (int i = 0; i < coordinates.size(); i++) {
+            int root = dsu.find(i);
+            groups.put(root, groups.getOrDefault(root, 0) + 1);
+        }
+
+        List<Integer> sizes = new ArrayList<>(groups.values());
+        sizes.sort(Collections.reverseOrder());
+
+        long result = (long)sizes.get(0) * sizes.get(1) * sizes.get(2);
+        return result;
+    }
+
+    private static long doOperationSecond(ArrayList<JunctionBox> coordinates) {
+        ArrayList<Edge> edges = new ArrayList<>();
+
+        for (int i = 0; i < coordinates.size(); i++){
+            for (int j = i + 1; j < coordinates.size(); j++){
+                double d = coordinates.get(i).euclideanDistance(coordinates.get(j));
+                edges.add(new Edge(coordinates.get(i), coordinates.get(j), d));
+            }
+        }
+
+        Collections.sort(edges);
+
+        DSU dsu = new DSU(coordinates.size());
+        int components = coordinates.size();
+        long lastX1 = 0, lastX2 = 0;
+
+        for (Edge e : edges) {
+            int rootA = dsu.find(e.a.id);
+            int rootB = dsu.find(e.b.id);
+            if (rootA != rootB) {
+                dsu.union(rootA, rootB);
+                lastX1 = e.a.x;
+                lastX2 = e.b.x;
+                components--;
+                if (components == 1) break;
+            }
+        }
+        return lastX1 * lastX2;
     }
 
     private static void parseAndOperate(Scanner scan){
+        int i = 0;
         int[] temp_coord;
-        ArrayList<String> coordinates = new ArrayList<>();
+        String[] splitted;
+        ArrayList<JunctionBox> coordinates = new ArrayList<>();
 
         while (scan.hasNextLine()) {
-            coordinates.add(scan.nextLine());
+            splitted = scan.nextLine().split(",");
+            coordinates.add(new JunctionBox(i++, Long.parseLong(splitted[0]), Long.parseLong(splitted[1]), Long.parseLong(splitted[2])));
         }
         counter_first = doOperationFirst(coordinates);
-        // counter_second = doOperationSecond(map);
+        counter_second = doOperationSecond(coordinates);
     }
 
     private static void getInputAndOperate() {
         Scanner scan = null;
 
         try {
-            scan = new Scanner(new File("test.txt"));
+            scan = new Scanner(new File("input.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
