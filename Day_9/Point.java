@@ -10,6 +10,14 @@ class Point{
         this.y = y;
     }
 
+    public boolean sameXAxis(Point point){
+        return this.x == point.x;
+    }
+
+    public boolean sameYAxis(Point point){
+        return this.y == point.y;
+    }
+
     public boolean poissibleCorner(Point point){
         return !(this.x == point.x || this.y == point.y);
     }
