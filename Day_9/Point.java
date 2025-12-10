@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 class Point{
@@ -18,7 +17,7 @@ class Point{
         return this.y == point.y;
     }
 
-    public boolean poissibleCorner(Point point){
+    public boolean possibleCorner(Point point){
         return !(this.x == point.x || this.y == point.y);
     }
 
@@ -31,5 +30,17 @@ class Point{
     @Override
     public String toString(){
         return this.x + "," + this.y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Point)) return false;
+        Point p = (Point)o;
+        return this.x == p.x && this.y == p.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
