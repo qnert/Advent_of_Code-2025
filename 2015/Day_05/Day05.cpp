@@ -6,6 +6,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <unordered_map>
 
 int doOperationFirst(std::string line){
     int count_vowel = 0;
@@ -26,8 +27,29 @@ int doOperationFirst(std::string line){
     return 0;
 }
 
-void doOperationSecond(std::string line){
+bool secondHelper(std::string line){
+    std::unordered_map<std::string, int> lastIndex;
 
+    for (int i = 0; i < line.size() - 1; i++){
+        std::string sub = line.substr(i, 2);
+
+        if (lastIndex.count(sub) != 0 && i - lastIndex[sub] >= 2)
+            return true;
+
+        lastIndex[sub] = i;
+    }
+    return false;
+}
+
+bool doOperationSecond(std::string line){
+    if (secondHelper(line)){
+        for (int i = 0; i < line.size() - 3; i++){
+            if (line[i] == line[i + 2])
+                return true;
+        }
+    }
+
+    return false;
 }
 
 int main(int ac, char** av){
@@ -35,6 +57,7 @@ int main(int ac, char** av){
         return -1;
 
     int counter_first = 0;
+    int counter_second = 0;
     std::string line;
     std::ifstream inFile(av[1]);
 
@@ -42,11 +65,13 @@ int main(int ac, char** av){
         while(getline(inFile, line)){
             if (doOperationFirst(line))
                 counter_first++;
+            if (doOperationSecond(line))
+                counter_second++;
         }
         inFile.close();
     }
     std::cout << counter_first << std::endl;
-    doOperationSecond(line);
+    std::cout << counter_second << std::endl;
     return 0;
 }
 
