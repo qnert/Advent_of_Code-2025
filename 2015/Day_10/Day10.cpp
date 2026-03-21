@@ -38,20 +38,6 @@ int main(int ac, char** av) {
     if (ac != 2)
         return -1;
 
-    int numCities = 0;
-    std::vector<std::vector<int>> dist;
-    std::map<std::string, int> cityIndex;
-
-    auto getOrAdd = [&](const std::string& name) -> int {
-        if (cityIndex.find(name) == cityIndex.end()) {
-            cityIndex[name] = numCities++;
-            for (auto& row : dist)
-                row.push_back(0);
-            dist.push_back(std::vector<int>(numCities, 0));
-        }
-        return cityIndex[name];
-    };
-
     std::string line;
     std::ifstream inFile(av[1]);
     if (inFile.is_open()) {
@@ -71,22 +57,5 @@ int main(int ac, char** av) {
         }
         inFile.close();
     }
-
-    std::vector<int> perm(numCities);
-    for (int i = 0; i < numCities; i++) perm[i] = i;
-
-    int minDist = INT_MAX, maxDist = 0;
-
-    do {
-        int total = 0;
-        for (int i = 0; i + 1 < numCities; i++)
-            total += dist[perm[i]][perm[i+1]];
-        minDist = std::min(minDist, total);
-        maxDist = std::max(maxDist, total);
-    } while (std::next_permutation(perm.begin(), perm.end()));
-
-    std::cout << "Shortest route: " << minDist << std::endl;
-    std::cout << "Longest route:  " << maxDist << std::endl;
-
     return 0;
 }
