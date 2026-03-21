@@ -7,55 +7,37 @@
 #include <climits>
 #include <utility>
 
-std::string ltrim(std::string s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char c) {
-        return !std::isspace(c);
-    }));
-    return s;
-}
+std::string computateString(std::string str){
+    int counter = 1;
+    char curr = str[0];
+    std::vector<std::pair<int, char>> new_digits;
 
-std::string rtrim(std::string s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char c) {
-        return !std::isspace(c);
-    }).base(), s.end());
-    return s;
-}
-
-std::string trim(std::string s) { return ltrim(rtrim(s)); }
-
-std::vector<std::string> splitString(const std::string& str, const std::string& delim) {
-    std::vector<std::string> tokens;
-    size_t start = 0, pos;
-    while ((pos = str.find(delim, start)) != std::string::npos) {
-        tokens.push_back(trim(str.substr(start, pos - start)));
-        start = pos + delim.length();
-    }
-    tokens.push_back(trim(str.substr(start)));
-    return tokens;
-}
-
-int main(int ac, char** av) {
-    if (ac != 2)
-        return -1;
-
-    std::string line;
-    std::ifstream inFile(av[1]);
-    if (inFile.is_open()) {
-        while (getline(inFile, line)) {
-            auto parts = splitString(line, " to ");
-            if (parts.size() < 2) continue;
-            std::string cityA = trim(parts[0]);
-            auto rightParts = splitString(parts[1], " = ");
-            if (rightParts.size() < 2) continue;
-            std::string cityB = trim(rightParts[0]);
-            int w = std::stoi(trim(rightParts[1]));
-
-            int a = getOrAdd(cityA);
-            int b = getOrAdd(cityB);
-            dist[a][b] = w;
-            dist[b][a] = w;
+    for (int i = 1; i < str.length(); i++){
+        if (str[i] != curr){
+            new_digits.push_back({counter, curr});
+            curr = str[i];
+            counter = 0;
         }
-        inFile.close();
+        counter++;
     }
+    new_digits.push_back({counter, curr});
+
+    std::string new_str = "";
+    for (auto p: new_digits){
+        new_str += std::to_string(p.first) + p.second;
+    }
+    return new_str;
+}
+
+std::string doOperationFirst(std::string input, int curr_iteration, int iterations){
+    if (curr_iteration >= iterations)
+        return input;
+    std::string new_str = computateString(input);
+    return doOperationFirst(new_str, curr_iteration + 1, iterations);
+}
+
+int main() {
+    std::cout << doOperationFirst("1113222113", 0 , 40).length() << std::endl;
+    std::cout << doOperationFirst("1113222113", 0, 50).length() << std::endl;
     return 0;
 }
